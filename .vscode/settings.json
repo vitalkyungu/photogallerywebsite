@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/e7f03f91-94d9-455d-aeec-85074fa9a60e/resourceGroups/photogallerysimilator_group/providers/Microsoft.Web/sites/photogallerysimilator",
+    "appService.deploySubpath": "."
+}
