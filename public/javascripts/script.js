@@ -9,7 +9,7 @@ $('.my-selector:first-child').doSomething();
 const form = $('form');
 const ul = $('ul');
 
-const imageInput = document.querySelector("#image-input");
+const imageInput = document.querySelector("#add-photos");
 const gallery = document.querySelector("#gallery");
 
 imageInput.addEventListener("change", () => {
