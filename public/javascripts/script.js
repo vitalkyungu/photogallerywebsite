@@ -2,12 +2,19 @@
 
 
 // Initialize the photoData array with any previously uploaded photos from localStorage
-const photoData = JSON.parse(localStorage.getItem('photoData')) || { collections: [] };
+const photoData = JSON.parse(localStorage.getItem('photoData')) || [{name: 'gallery', photos: []}];
+ 
 
 // Get references to the form and ul elements
-$('.my-selector:first-child').doSomething();
-const form = $('form');
-const ul = $('ul');
+//console.log($('.my-selector:first-child'));
+
+
+const addphotoForm=$('#add-photo');
+const contactForm = $('#contact-me');
+const ul = $('#list-photos');
+displayPhotos();
+const div =$('#collections');
+
 
 const imageInput = document.querySelector("#photo-gallery");
 const gallery = document.querySelector("#gallery");
@@ -27,17 +34,20 @@ imageInput.addEventListener("change", () => {
     }
 });
 // Add an event listener to the form's submit button
-form.on('submit', (e) => {
+addphotoForm.on('submit', (e) => {
+    console.log(e);
     e.preventDefault();
     const file = e.target.elements.photo.files[0];
+    console.log(file)
     const reader = new FileReader();
 
-    reader.on('load', () => {
+    reader.addEventListener('load', () => {
         const photo = {
             id: Date.now(),
             src: reader.result,
-        };
-        photoData.collections[0].photos.push(photo);
+        }
+        photoData[0].photos.push(photo);
+        console.log(photoData);
         localStorage.setItem('photoData', JSON.stringify(photoData));
         displayPhotos();
     });
@@ -45,12 +55,19 @@ form.on('submit', (e) => {
     reader.readAsDataURL(file);
 });
 
+contactForm.on('submit', (e)=>{
+    e.preventDefault();
+    alert('You have contacted me');
+});
+
 // Display the photos stored in photoData
 function displayPhotos() {
+    console.log('debug');
     ul.empty();
-    photoData.collections[0].photos.forEach((photo, index) => {
+for(var n=0; n<photoData.length;n++) {
+    photoData[n].photos.forEach((photo, index) => {
         const li = $('<li></li>');
-        const img = $('<img>').attr('src', photo.src);
+        const img = $('<img>').attr('src', photo.src).attr('width', '100px').attr('height', '100px');
         const deleteButton = $('<button>Delete</button>');
         deleteButton.on('click', () => deletePhoto(index));
         const downloadButton = $('<button>Download</button>');
@@ -59,13 +76,16 @@ function displayPhotos() {
         ul.append(li);
     });
 }
+    
+
+}
 
 // Call displayPhotos() to initially display any previously uploaded photos
-displayPhotos();
+
 
 // Delete a photo from photoData and localStorage
 function deletePhoto(index) {
-    photoData.collections[0].photos.splice(index, 1);
+    photoData[0].photos.splice(index, 1);
     localStorage.setItem('photoData', JSON.stringify(photoData));
     displayPhotos();
 }
@@ -85,7 +105,8 @@ createCollectionForm.on('submit', (event) => {
     event.preventDefault();
     const collectionName = event.target.elements['collection-name'].value;
     if (collectionName) {
-        photoData.collections.push({ name: collectionName, photos: [] });
+        console.log(photoData);
+        photoData.push({ name: collectionName, photos: [] });
         localStorage.setItem('photoData', JSON.stringify(photoData));
         event.target.reset();
         alert(`Collection "${collectionName}" created successfully!`);
@@ -93,12 +114,13 @@ createCollectionForm.on('submit', (event) => {
 });
 
 // Display the photos stored in photoData for a specific collection
-function displayPhotos(collectionName) {
+function displayCollections(collectionName) {
     $(ul).empty();
-    if (photoData.collections) {
-        const collection = photoData.collections.find((c) => c.name === collectionName);
+    if (photoData) {
+        const collection = photoData.find((c) => c.name === collectionName);
         if (collection) {
-            collection.photos.forEach((photo, index) => {
+            console.log('collections')
+            collection.photos.forEach((photo) => {
                 // Create the li and img elements
                 const li = $('<li></li>');
                 const img = $('<img>').attr('src', photo.src);
